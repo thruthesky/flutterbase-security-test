@@ -7,9 +7,14 @@ service cloud.firestore {
       allow read: if false;
       allow write: if false;
     }
-    // match /users/{user} {
-    //   allow read, update, delete: if request.auth.uid == resource.id;
-    //   allow create: if request.auth.uid != null;
-    // }
+    // 사용자
+    match /users/{uid} {
+      // 로그인을 했으면, 도큐먼트 생성 가능
+      allow create: if request.auth.uid != null;
+      // 자신의 도큐먼트이면 읽기/수정 가능.
+      allow read, update: if request.auth.uid == uid;
+      // 삭제는 불가능
+      allow delete: if false;
+    }
   }
 }
