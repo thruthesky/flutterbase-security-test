@@ -1,0 +1,16 @@
+{
+  "name": "rules",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^26.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest --detectOpenHandles --watchAll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
