@@ -8,7 +8,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "jest --detectOpenHandles --watchAll"
+    "test": "jest --detectOpenHandles --watchAll",
+    "test:post": "jest --detectOpenHandles --watch spec/post.spec.js"
   },
   "keywords": [],
   "author": "",
