@@ -35,6 +35,7 @@ describe('Database rules', () => {
     })
 
     /// 실제 테스트를 작성한다.
+    /// 기본적으로 read,write false rule 이어서 다 막혀있다. 그래서, 여기서는 읽기 쓰기 모두 에러가 난다.
     test('fail when reading/writing on an unauthorized collection', async () => {
 
         /// 두 줄로 테스트 작성
@@ -45,9 +46,12 @@ describe('Database rules', () => {
         expect(await assertFails(ref.add({})));
 
         /// 이해하기 쉽게 작성
+        /// Jest 의 Custom matcher 기능을 통해서, 보다 쉽게 코딩을 할 수 있다.
         await expect(ref.get()).toDeny();
 
         /// 또는 필요할 때 아래와 같이 작성하면 된다.
         // await expect(ref.get()).toAllow();
     });
+
+
 });
