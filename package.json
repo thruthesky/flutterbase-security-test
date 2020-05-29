@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@firebase/testing": "^0.19.5",
     "jest": "^26.0.1"
   },
   "devDependencies": {},
