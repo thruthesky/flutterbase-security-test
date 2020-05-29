@@ -23,36 +23,71 @@ describe('Post', () => {
         await teardown();
     });
 
-    test('Create a post', async () => {
-        
-        /// without login
-        const db = await setup({}, mockData);
+    test('fail on creating a post without login', async () => {
+        /// 로그인을 하지 않은 채 글 쓰기
+        const db = await setup();
         const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-2').set({ uid: 'my-id', title: 'title' })).toDeny();
+    });
 
+
+    test('success on creating a post with login', async () => {
+        /// 로그인을 하지 않은 채 글 쓰기
+        const db = await setup(mockUser);
+        const postsCol = db.collection('posts');
         await expect(postsCol.doc('post-id-2').set({ uid: 'my-id', title: 'title' })).toAllow();
     });
 
 
-
-    test('should fail on wrong user update', async () => {
-        /// 저장된 도큐먼트 ID 가 `wrong-uid`
-        const mockData = {
-            "users/wrong-uid": {
-                displayName: "wrong-name"
-            },
-        };
-        /// 로그인은 `thruthesky` 로 함.
-        const mockUser = {
-            uid: "thruthesky"
-        };
-        const db = await setup(mockUser, mockData);
-        usersCol = db.collection('users');
-
-        /// 로그인을 `thruthesky`로 했는데, `wrong-uid` 도큐먼트를 수정하려고 함
-        await expect(usersCol.doc('wrong-uid').update({ data: 'something', birthday: '123456' })).toDeny();
+    test('fail on updating a post with wrong user', async () => {
+        /// 다른 사용자로 로그인을 하여 글 쓰기
+        const db = await setup({ uid: 'wrong-user' }, mockData);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-1').update({ uid: 'my-id', title: 'title' })).toDeny();
     });
 
 
+    test('fail on updating a post create by another user', async () => {
+        /// 로그인을 하지 않은 채 글 쓰기
+        const db = await setup(mockUser, {
+            "posts/post-id-1": {
+                uid: "written-by-another-user",
+                title: "this is the title."
+            }
+        });
+        const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title' })).toDeny();
+    });
+
+    test('success on updating my post', async () => {
+        ///
+        const db = await setup(mockUser, mockData);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title' })).toAllow();
+    });
+
+
+
+    test("fail on deleting another's post", async () => {
+        /// 로그인을 하지 않은 채 글 쓰기
+        const db = await setup(mockUser, {
+            "posts/post-id-3": {
+                uid: "written-by-another-user",
+                title: "this is the title."
+            }
+        });
+        const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-3').delete()).toDeny();
+    });
+
+
+
+    test("success on deleting my post", async () => {
+        const db = await setup(mockUser, mockData);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.doc('post-id-1').delete()).toAllow();
+    });
+    
 
 
 });

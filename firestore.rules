@@ -25,9 +25,21 @@ service cloud.firestore {
       // 아무나 글을 읽거나 목록 할 수 있음.
       allow read: if true;
 
-      // 수정/삭제는 자기 글만 가능.
-      allow update, delete: if request.resource.data.uid == request.auth.uid
-        && resource.data.uid == request.auth.uid;
+      // 수정은 자기 글만 가능.
+      // 수정할 때에는 data 에 uid 값이 들어 올 필요 없다. 저장된 uid 가 로그인 사용자 uid 가 맞는지만 검사한다.
+      // 즉, 저장된 uid 값을 없애거나 변경해서는 안된다.
+      allow update: if resource.data.uid == request.auth.uid && notUpdating('uid');
+
+
+      // 삭제는 자기 글만 가능
+      allow delete: if resource.data.uid == request.auth.uid;
+
+    }
+
+    // 입력 data 에 field 가 없거나, 있다면, 저장되어져 있는 값과 동일해야 한다.
+    // 즉, 값을 변경을 하지 못하도록 하는 체크하는 함수이다.
+    function notUpdating(field) {
+      return !(field in request.resource.data) || resource.data[field] == request.resource.data[field];
     }
   }
 }

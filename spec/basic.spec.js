@@ -22,6 +22,7 @@ describe('Database rules', () => {
 
     /// 테스트를 할 때, 설정을 한다.
     beforeAll(async () => {
+        /// 로그인을 하지 않은 체 테스트를 하려면, 그냥 setup() 에 아무런 인자를 주지 않으면 된다.
         db = await setup();
 
         /// 기본적으로 read, write false 이므로, 아무곳에 쓰면 에러가 난다.
