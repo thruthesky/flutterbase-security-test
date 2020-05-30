@@ -20,7 +20,7 @@ service cloud.firestore {
     // 글
     match /posts/{postId} {
       // 로그인을 했으면, 도큐먼트 생성 가능
-      allow create: if login() && toBeData();
+      allow create: if login() && toBeMyData();
 
       // 아무나 글을 읽거나 목록 할 수 있음.
       allow read: if true;
@@ -36,6 +36,19 @@ service cloud.firestore {
       allow delete: if myData();
 
     }
+
+    // 카테고리. 모든 회원이 읽을 수 있지만, 관리자만 쓰기 가능.
+    match /categories/{document=**} {
+      allow read: if true;
+      allow create, delete: if admin();
+      allow update: if admin() && notUpdating('id');
+    }
+    // 설정. 모든 회원이 읽을 수 있지만, 관리자만 쓰기 가능.
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if admin();
+    }
+
 
     // 로그인을 했는지 검사
     function login() {
@@ -54,8 +67,13 @@ service cloud.firestore {
     }
 
     // 사용자의 uid 와 저장할 데이터의 uid 가 일치하면, 나의 데이터로 저장 될 것이다.
-    function toBeData() {
+    function toBeMyData() {
       return request.resource.data.uid == request.auth.uid;
+    }
+    // 관리자 인지 확인. 메일 주소로 확인한다.
+    // 메일 주소는 여러개 지정 할 수 있다.
+    function admin() {
+      return login() && ( request.auth.token.email in ['thruthesky@gmail.com', 'admin-email@test.com'] );
     }
   }
 }

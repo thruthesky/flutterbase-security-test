@@ -22,6 +22,8 @@ $ git clone https://github.com/thruthesky/flutterbase-security-test
 
 ```
 $ npm run test
+$ npm run test:admin
+$ npm run test:post
 ```
 
 ## Publish
