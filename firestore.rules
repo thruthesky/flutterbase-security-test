@@ -11,8 +11,14 @@ service cloud.firestore {
     match /users/{uid} {
       // 로그인을 했으면, 도큐먼트 생성 가능
       allow create: if login();
-      // 자신의 도큐먼트이면 읽기/수정 가능.
-      allow read, update: if request.auth.uid == uid;
+
+      // 자신의 도큐먼트이면 읽기 가능.
+      allow read: if request.auth.uid == uid;
+
+      // 자신의 도큐먼트인 경우, `isAdmin` 속성은 빼고 수정 가능.
+      // 관리자인 경우에도, request data 로 직접 isAmdin 속성을 수정 할 수 없다. 
+      allow update: if request.auth.uid == uid && notUpdating('isAdmin');
+
       // 삭제는 불가능
       allow delete: if false;
     }
@@ -55,7 +61,9 @@ service cloud.firestore {
       return request.auth.uid != null;
     }
 
-    // 입력 data 에 field 가 없거나, 있다면, 저장되어져 있는 값과 동일해야 한다.
+    // 필드를 변경하지 못하게하는 검사
+    //
+    // request data 에 field 가 없거나, 있다면, 저장되어져 있는 값과 동일해야 한다.
     // 즉, 값을 변경을 하지 못하도록 하는 체크하는 함수이다.
     function notUpdating(field) {
       return !(field in request.resource.data) || resource.data[field] == request.resource.data[field];
@@ -70,10 +78,12 @@ service cloud.firestore {
     function toBeMyData() {
       return request.resource.data.uid == request.auth.uid;
     }
-    // 관리자 인지 확인. 메일 주소로 확인한다.
-    // 메일 주소는 여러개 지정 할 수 있다.
+
+    // 관리자 인지 확인.
+    //
+    // 사용자 도큐먼트에 `isAdmin` 속성이 true 인 경우, 관리자로 간주한다.
     function admin() {
-      return login() && ( request.auth.token.email in ['thruthesky@gmail.com', 'admin-email@test.com'] );
+      return login() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
   }
 }

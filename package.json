@@ -11,7 +11,9 @@
   "scripts": {
     "test": "jest --detectOpenHandles --watchAll",
     "test:admin": "jest --detectOpenHandles --watch spec/admin.spec.js",
-    "test:post": "jest --detectOpenHandles --watch spec/post.spec.js"
+    "test:post": "jest --detectOpenHandles --watch spec/post.spec.js",
+    "test:user": "jest --detectOpenHandles --watch spec/user.spec.js",
+    "test:category": "jest --detectOpenHandles --watch spec/category.spec.js"
   },
   "keywords": [],
   "author": "",
