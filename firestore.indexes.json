@@ -1,12 +1,12 @@
 {
   "indexes": [
     {
-      "collectionGroup": "post",
+      "collectionGroup": "posts",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "categories",
-          "arrayConfig": "CONTAINS"
+          "fieldPath": "category",
+          "order": "ASCENDING"
         },
         {
           "fieldPath": "createdAt",

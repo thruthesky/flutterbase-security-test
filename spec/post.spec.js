@@ -7,6 +7,9 @@ describe('Post', () => {
             uid: "thruthesky",
             title: "this is the title."
         },
+        'categories/apple': {
+            title: 'Apple',
+        },
     };
     const mockUser = {
         uid: "thruthesky"
@@ -38,12 +41,35 @@ describe('Post', () => {
         await expect(postsCol.add({ uid: 'other-uid', title: 'title' })).toDeny();
     });
 
-
-    test('success on creating a post with login', async () => {
+    test('fail on creating a post with login but without categories', async () => {
         const db = await setup(mockUser);
         const postsCol = db.collection('posts');
-        await expect(postsCol.add({ uid: mockUser.uid, title: 'title' })).toAllow();
+        await expect(postsCol.add({ uid: mockUser.uid, title: 'title' })).toDeny();
     });
+
+
+    test('create', async () => {
+        const db = await setup(mockUser, mockData);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.add({ uid: mockUser.uid, title: 'title', category: 'apple' })).toAllow();
+    });
+
+
+    test('fail on wrong category', async () => {
+        const db = await setup(mockUser, mockData);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.add({ uid: mockUser.uid, title: 'title', category: 'wrong-category' })).toDeny();
+    });
+
+
+
+    test('fail with array category', async () => {
+        const db = await setup(mockUser);
+        const postsCol = db.collection('posts');
+        await expect(postsCol.add({ uid: mockUser.uid, title: 'title', category: ['abc'] })).toDeny();
+    });
+
+
 
 
     test('fail on updating a post with wrong user', async () => {
@@ -64,11 +90,11 @@ describe('Post', () => {
         await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title' })).toDeny();
     });
 
-    test('success on updating my post', async () => {
+    test('updating my post', async () => {
         ///
         const db = await setup(mockUser, mockData);
         const postsCol = db.collection('posts');
-        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title' })).toAllow();
+        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title', category: 'apple' })).toAllow();
     });
 
 
