@@ -3,16 +3,20 @@
  */
 const { setup, teardown } = require('./helper');
 
-/// 저장된 도큐먼트 ID 가 `a-user-uid`
+/// 저장된 도큐먼트 ID 가 `user-uid`
 const adminMockData = {
-    "users/a-user-uid": {
+    "users/user-uid": {
         displayName: "user-name",
         isAdmin: true,
     },
 };
-/// 로그인은 `thruthesky` 로 함.
+/// 로그인은 (임시) `user-uid` 로 함.
 const adminMock = {
-    uid: "a-user-uid",
+    uid: "user-uid",
+    email: 'user1@gmail.com',
+    firebase: {
+        sign_in_provider: 'password'
+    }
 };
 
 describe('Database rules', () => {

@@ -23,8 +23,12 @@ describe('User', () => {
     });
 
 
-    test('reating with login', async () => {
-        const db = await setup({uid: 'uid'});
+    test('creating with login', async () => {
+        const db = await setup({
+            uid: 'uid',
+            firebase: {
+                sign_in_provider: 'password' // auth.token.firebase.sign_in_provider 에서 `auth.token`은 빼고 입력
+            }});
         const usersCol = db.collection('users');
         await expect(usersCol.add({data: 'something'})).toAllow();
     });
@@ -37,7 +41,10 @@ describe('User', () => {
             },
         };
         const mockUser = {
-            uid: "thruthesky"
+            uid: "thruthesky",
+            firebase: {
+                sign_in_provider: 'password' // auth.token.firebase.sign_in_provider 에서 `auth.token`은 빼고 입력
+            }
         };
         const db = await setup(mockUser, mockData);
         usersCol = db.collection('users');

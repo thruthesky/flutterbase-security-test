@@ -12,7 +12,11 @@ describe('Post', () => {
         },
     };
     const mockUser = {
-        uid: "thruthesky"
+        uid: "thruthesky",
+
+        firebase: {
+            sign_in_provider: 'password' // auth.token.firebase.sign_in_provider 에서 `auth.token`은 빼고 입력
+        }
     };
 
 
@@ -51,7 +55,7 @@ describe('Post', () => {
     test('create', async () => {
         const db = await setup(mockUser, mockData);
         const postsCol = db.collection('posts');
-        await expect(postsCol.add({ uid: mockUser.uid, title: 'title', category: 'apple' })).toAllow();
+        await expect(postsCol.add({ uid: mockUser.uid, title: 'title', category: 'apple', like: 0, dislike: 0 })).toAllow();
     });
 
 
@@ -90,11 +94,13 @@ describe('Post', () => {
         await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title' })).toDeny();
     });
 
+
+
     test('updating my post', async () => {
         ///
         const db = await setup(mockUser, mockData);
         const postsCol = db.collection('posts');
-        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title', category: 'apple' })).toAllow();
+        await expect(postsCol.doc('post-id-1').update({ uid: mockUser.uid, title: 'title', category: 'apple', })).toAllow();
     });
 
 

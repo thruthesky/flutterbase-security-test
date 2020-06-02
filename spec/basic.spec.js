@@ -13,6 +13,9 @@ const { setup, teardown } = require('./helper');
  * 그래서
  *      expect( expectFailedRead )
  * 테스트를 통과 하는 것이다.
+ * 
+ * - 도큐먼트 읽기와 출력
+ *  `console.log( (await doc.get()).data() );`
  */
 const { assertFails, assertSucceeds } = require('@firebase/testing');
 
@@ -53,6 +56,19 @@ describe('Database rules', () => {
         /// 또는 필요할 때 아래와 같이 작성하면 된다.
         // await expect(ref.get()).toAllow();
     });
+
+    test('login', async () => {
+        /// 로그인은 (임시) `user-uid` 로 함.
+        const mockUser = {
+            uid: "user-uid", // uid 는 바로 지정.
+            email: 'user1@gmail.com', // auth.token.email 에서 `auth.token` 부분을 빼고 바로 입력
+            name: 'user display name', // auth.token.displayName 이다.
+            firebase: {
+                sign_in_provider: 'password' // auth.token.firebase.sign_in_provider 에서 `auth.token`은 빼고 입력
+            }
+        };
+        const db = await setup(mockUser, {});
+    })
 
 
 });

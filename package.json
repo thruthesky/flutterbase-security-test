@@ -14,7 +14,8 @@
     "test:post": "jest --detectOpenHandles --watch spec/post.spec.js",
     "test:user": "jest --detectOpenHandles --watch spec/user.spec.js",
     "test:category": "jest --detectOpenHandles --watch spec/category.spec.js",
-    "test:comment": "jest --detectOpenHandles --watch spec/comment.spec.js"
+    "test:comment": "jest --detectOpenHandles --watch spec/comment.spec.js",
+    "test:vote": "jest --detectOpenHandles --watch spec/vote.spec.js"
   },
   "keywords": [],
   "author": "",

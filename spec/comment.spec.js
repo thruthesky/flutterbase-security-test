@@ -1,4 +1,6 @@
-
+// TODO:
+// - test on depth 0 and 13
+//
 const { setup, teardown } = require('./helper');
 describe('Post', () => {
 
@@ -17,7 +19,10 @@ describe('Post', () => {
         },
     };
     const mockUser = {
-        uid: "thruthesky"
+        uid: "thruthesky",
+        firebase: {
+            sign_in_provider: 'password' // auth.token.firebase.sign_in_provider 에서 `auth.token`은 빼고 입력
+        }
     };
 
 
@@ -59,7 +64,10 @@ describe('Post', () => {
         await expect(col.add({
             uid: mockUser.uid,
             content: 'content',
-            order: '99999.9999.999.999.999.999.999.999.999.999.999.999'
+            depth: 1,
+            order: '99999.99999.99999.99999.99999.99999.99999.99999.99999.99999.99999.99999',
+            like: 0,
+            dislike: 0,
         })).toAllow();
     });
 
@@ -83,7 +91,7 @@ describe('Post', () => {
         const col = db.collection('posts').doc('post-id-1').collection('comments').doc('comment-id-1');
         await expect(col.update({
             content: 'content',
-            order: '99999.9999.999.999.999.999.999.999.999.999.999.991' // uid 변경
+            order: '99999.99999.99999.99999.99999.99999.99999.99999.99999.99999.99999.99990' // uid 변경
         })).toDeny();
     });
     test('update with non-exist-post', async () => {
