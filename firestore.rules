@@ -22,6 +22,14 @@ service cloud.firestore {
 
       // 삭제는 불가능
       allow delete: if false;
+
+
+      // 푸시 토큰
+      // - 각 사용자 도큐먼트 하위에 기록
+      match /tokens/{token} {
+        allow read: if true;
+        allow write: if request.auth.uid == uid;
+      }
     }
 
     // 카테고리. 모든 회원이 읽을 수 있지만, 관리자만 쓰기 가능.
